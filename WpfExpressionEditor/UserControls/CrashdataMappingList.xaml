@@ -1,0 +1,113 @@
+﻿<UserControl x:Class="WpfExpressionEditor.UserControls.CrashdataMappingList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfExpressionEditor.UserControls"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:interactivity="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:local1="clr-namespace:WpfExpressionEditor.ViewModel"
+             xmlns:converter="clr-namespace:WpfExpressionEditor.Converters"
+             xmlns:customCommands="clr-namespace:WpfExpressionEditor.CustomCommands"
+             xmlns:views="clr-namespace:WpfExpressionEditor.UserControls" 
+             xmlns:cmd="http://www.galasoft.ch/mvvmlight"
+             mc:Ignorable="d" 
+             d:DesignHeight="750" d:DesignWidth="600">
+    <UserControl.DataContext>
+        <local1:CrashDataMappingItemViewModel/>
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <converter:BooleanToVisibilityConverter x:Key="BoolToVis"  />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="350"/>
+        </Grid.RowDefinitions>
+        <views:ExpressionEditor Visibility="{Binding IsVisible, Converter={StaticResource BoolToVis}}" DataContext="{Binding ExpressionEditorViewModel}" Grid.Row="0" Grid.Column="1" x:Name = "ExpressionEditor">
+        </views:ExpressionEditor>
+        <Button Grid.Row="1"  Command="{Binding OpenExpressionEditorCommand}">Open</Button>
+        <DataGrid x:Name="ruleEditorGrid" Grid.Row="2" Margin="0,10,0,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HeadersVisibility="Column" SelectedItem="{Binding SelectedCrashDataMappingItem}"  
+                              Background="White" HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" AutoGenerateColumns="False" MinHeight="80" RowHeaderWidth="0" 
+                              CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" 
+                              SelectionMode="Extended" EnableRowVirtualization="True" ItemsSource="{Binding CrashDataMappingItems, NotifyOnTargetUpdated=true}"
+                              customCommands:CustomCommands.DataGridSelectionChangedCommand="{Binding SelectionChangedCommand}">
+            <DataGrid.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
+                   Color="Gold"/>
+            </DataGrid.Resources>
+            <DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True" >
+                            <Setter Property="Foreground" Value="Black" />
+                            <Setter Property="Background" Value="Gold" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding SensorLocation}">
+                    <DataGridTextColumn.Header>
+                        <TextBlock Text="Sensor Location" ToolTip="Sensor Location"  />
+                    </DataGridTextColumn.Header>
+                </DataGridTextColumn>
+                <DataGridTextColumn Width="35" Binding="{Binding SensorDirection}">
+                    <DataGridTextColumn.Header>
+                        <TextBlock Text="Dir." ToolTip="Direction"  />
+                    </DataGridTextColumn.Header>
+                </DataGridTextColumn>
+                <DataGridTextColumn Width="100">
+                    <DataGridTextColumn.Header>
+                        <TextBlock Text="Rotator" ToolTip="Rotator" />
+                    </DataGridTextColumn.Header>
+                </DataGridTextColumn>
+
+                <DataGridTemplateColumn Width="*">
+                    <DataGridTemplateColumn.Header>
+                        <TextBlock Text="Rules" ToolTip="Rules"  />
+                    </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button ToolTip="Create Rules" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl},Mode=FindAncestor},Path=DataContext.EditRulesCommand}" CommandParameter="{Binding}" 
+                              HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Top">
+
+                                    <Image Grid.Column="1" Source="/Images/EditIcon.png" Height="16" Width="16"/>
+                                </Button>
+                                <TextBlock Grid.Column="0" Text="{Binding RuleAsText}" Margin="5,0,5,0" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxWidth="525"  >
+
+                                </TextBlock>
+                                <TreeView Name="tvExpression"   Focusable="False" ItemsSource="{Binding TreeList}">
+                                   <!--
+                                    <i:Interaction.Behaviors>
+                                        <local1:TreeViewBehavior  />
+                                    </i:Interaction.Behaviors>
+                                    -->
+                                    <TreeView.ItemTemplate>
+                                        <HierarchicalDataTemplate DataType="x:Type local:ExprWrapper"  ItemsSource="{Binding Children}">
+                                            <TextBlock Text="{Binding Text}">
+                                                <TextBlock.InputBindings>
+                                                    <!--<MouseBinding MouseAction="LeftDoubleClick" Command="{Binding GetSelectedItemCommand}" CommandParameter="{Binding}" />-->
+                                                    <MouseBinding MouseAction="RightClick" Command="{Binding GetSelectedItemCommand}" CommandParameter="{Binding}" />
+                                                </TextBlock.InputBindings>
+                                            </TextBlock>
+
+                                        </HierarchicalDataTemplate>
+                                    </TreeView.ItemTemplate>
+                                </TreeView>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Binding="{Binding ChannelInfo}">
+                    <DataGridTextColumn.Header>
+                        <TextBlock Text="Channel Info" ToolTip="Channel Info"  />
+                    </DataGridTextColumn.Header>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </Grid>
+</UserControl>
