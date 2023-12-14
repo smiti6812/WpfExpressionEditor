@@ -19,7 +19,7 @@
     <UserControl.Resources>
         <converter:BooleanToVisibilityConverter x:Key="BoolToVis"  />
     </UserControl.Resources>
-    <Grid>
+    <Grid x:Name="MainGrid" KeyDown="MainGrid_KeyDown">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="50" />
@@ -84,7 +84,7 @@
                                     <i:Interaction.Behaviors>
                                         <local1:TreeViewBehavior  />
                                     </i:Interaction.Behaviors>
-                                    -->
+                                    -->                                  
                                     <TreeView.ItemTemplate>
                                         <HierarchicalDataTemplate DataType="x:Type local:ExprWrapper"  ItemsSource="{Binding Children}">
                                             <TextBlock Text="{Binding Text}">

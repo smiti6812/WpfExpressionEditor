@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-C:\Users\SCM6BP\source\repos\WpfExpressionEditor\WpfExpressionEditor\obj\Debug\
+C:\Users\smiti6812\Docker\ExpressionEditor\WpfExpressionEditor\WpfExpressionEditor\obj\Debug\
 WpfExpressionEditor
 none
 false
 DEBUG;TRACE
-C:\Users\SCM6BP\source\repos\WpfExpressionEditor\WpfExpressionEditor\App.xaml
+C:\Users\smiti6812\Docker\ExpressionEditor\WpfExpressionEditor\WpfExpressionEditor\App.xaml
 31821832973
 
-22267529440
-143-1007137918
+25-1948417549
+14371875112
 MainWindow.xaml;UserControls\CrashdataMappingList.xaml;UserControls\ExpressionEditor.xaml;
 
 False

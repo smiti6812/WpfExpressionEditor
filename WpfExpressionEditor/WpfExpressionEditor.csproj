@@ -139,6 +139,9 @@
     <Compile Include="ExpressionExtensions.cs" />
     <Compile Include="ExpressionWrapper.cs" />
     <Compile Include="Model\CrashDataMappingItem.cs" />
+    <Compile Include="Tree\ExpressionNode.cs" />
+    <Compile Include="Tree\GenerateTree.cs" />
+    <Compile Include="Tree\Node.cs" />
     <Compile Include="ViewModel\LinqExtension.cs" />
     <Compile Include="ViewModel\TextBoxHelper.cs" />
     <Compile Include="UserControls\CrashdataMappingList.xaml.cs">

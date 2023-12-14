@@ -27,5 +27,14 @@ namespace WpfExpressionEditor.UserControls
             InitializeComponent();
             this.DataContext = new CrashDataMappingItemViewModel();
         }
+        private void MainGrid_KeyDown(object sender, MouseButtonEventArgs e)
+        {
+            MainGrid.Focus();
+        }
+
+        private void MainGrid_KeyDown(object sender, KeyEventArgs e)
+        {
+            MainGrid.Focus();
+        }
     }
 }

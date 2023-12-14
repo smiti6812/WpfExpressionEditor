@@ -4,12 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfExpressionEditor"
+        xmlns:tree="clr-namespace:WpfExpressionEditor.Tree"
         xmlns:views="clr-namespace:WpfExpressionEditor.UserControls"
         mc:Ignorable="d"
         Title="MainWindow" Height="700" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="80" />
+            <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -19,5 +21,12 @@
         </Grid.ColumnDefinitions>
         <Border Grid.Row="1" Grid.ColumnSpan="3" Background="White"></Border>
         <views:CrashdataMappingList Grid.Row="1" Grid.Column="1" x:Name = "CrashdataMappingList"/>
+        <TreeView Name="NodeTree" Grid.Row="2" Width="300">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type tree:NodeString}" ItemsSource="{Binding Children}">
+                    <TextBlock Text="{Binding Formula}" />
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
     </Grid>
 </Window>
