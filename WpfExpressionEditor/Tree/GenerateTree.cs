@@ -129,12 +129,12 @@ namespace WpfExpressionEditor.Tree
                 nodeLeft.DataString = str.Substring(0, andIndex);
                 root.Left = nodeLeft;
                 nodeLeft.Parent = root;
-                GetTree(nodeLeft, nodeLeft.DataString);
+                _ = GetTree(nodeLeft, nodeLeft.DataString);
                 var nodeRight = new NodeString();
                 nodeRight.DataString = str.Substring(andIndex + 3, str.Length - andIndex - 3);
                 root.Right = nodeRight;
                 nodeRight.Parent = root;
-                GetTree(nodeRight, nodeRight.DataString);
+                _ = GetTree(nodeRight, nodeRight.DataString);
             }
             return root;
         }
@@ -190,7 +190,7 @@ namespace WpfExpressionEditor.Tree
                     nodeLeft.DataString = str.Substring(andIndex + 4, str.Length - andIndex - 4).Trim();
                     node.Left = nodeLeft;
                     nodeLeft.Parent = node;
-                    GetTreeFrom_String(nodeLeft, nodeLeft.DataString);
+                    _ = GetTreeFrom_String(nodeLeft, nodeLeft.DataString);
                 }
                 else if (str.Substring(andIndex + 4, str.Length - andIndex - 4).Contains("Or"))
                 {
@@ -202,7 +202,7 @@ namespace WpfExpressionEditor.Tree
                     nodeLeft.DataString = str.Substring(orIndex + 3, str.Length - orIndex - 3).Trim();
                     node.Left = nodeLeft;
                     nodeLeft.Parent = node;
-                    GetTreeFrom_String(nodeLeft, nodeLeft.DataString);
+                    _ = GetTreeFrom_String(nodeLeft, nodeLeft.DataString);
                 }
             }
             else // It is a child element
@@ -218,9 +218,9 @@ namespace WpfExpressionEditor.Tree
                             andIndex = ReturnAndIndex(str.Substring(andIndex, str.Length - andIndex));
                         }
                         var nodeLeft = CreateNodeLeft(root, str.Substring(0, andIndex).TrimEnd(' '), "And");
-                        GetTreeFrom_String(nodeLeft, nodeLeft.DataString);
+                        _ = GetTreeFrom_String(nodeLeft, nodeLeft.DataString);
                         var nodeRight = CreateNodeRight(root, str.Substring(andIndex + 4, str.Length - andIndex - 4).TrimEnd(' '), "And");
-                        GetTreeFrom_String(nodeRight, nodeRight.DataString);
+                        _ = GetTreeFrom_String(nodeRight, nodeRight.DataString);
                     }
                     else if (Regex.Matches(str, "Or").Count > 0 && Regex.Matches(str, "And").Count == 0)
                     {
@@ -230,26 +230,26 @@ namespace WpfExpressionEditor.Tree
                             orIndex = ReturnOrIndex(str.Substring(orIndex, str.Length - orIndex));
                         }
                         var nodeLeft = CreateNodeLeft(root, str.Substring(0, orIndex).TrimEnd(' '), "Or");
-                        GetTreeFrom_String(nodeLeft, nodeLeft.DataString);
+                        _ = GetTreeFrom_String(nodeLeft, nodeLeft.DataString);
                         var nodeRight = CreateNodeRight(root, str.Substring(orIndex + 3, str.Length - orIndex - 3).TrimEnd(' '), "Or");
-                        GetTreeFrom_String(nodeRight, nodeRight.DataString);
+                        _ = GetTreeFrom_String(nodeRight, nodeRight.DataString);
                     }
                 } //there are parenthesis
                 else if (str.Substring(closing + 1, 4).Contains("And"))
                 {
                     root.NodeType = "And";
                     var nodeLeft = CreateNodeLeft(root, str.Substring(0, closing + 1), "And");
-                    GetTreeFrom_String(nodeLeft, nodeLeft.DataString);
+                    _ = GetTreeFrom_String(nodeLeft, nodeLeft.DataString);
                     var nodeRight = CreateNodeRight(root, str.Substring(closing + 6, str.Length - closing - 6).Trim(), "And");
-                    GetTreeFrom_String(nodeRight, nodeRight.DataString);
+                    _ = GetTreeFrom_String(nodeRight, nodeRight.DataString);
                 }
                 else if (str.Substring(closing + 1, 4).Contains("Or"))
                 {
                     root.NodeType = "Or";
                     var nodeLeft = CreateNodeLeft(root, str.Substring(0, closing + 1), "Or");
-                    GetTreeFrom_String(nodeLeft, nodeLeft.DataString);
+                    _ = GetTreeFrom_String(nodeLeft, nodeLeft.DataString);
                     var nodeRight = CreateNodeRight(root, str.Substring(closing + 5, str.Length - closing - 5).Trim(), "Or");
-                    GetTreeFrom_String(nodeRight, nodeRight.DataString);
+                    _ = GetTreeFrom_String(nodeRight, nodeRight.DataString);
                 }
             }
 
@@ -279,27 +279,37 @@ namespace WpfExpressionEditor.Tree
 
             return index;
         }
-        public static void ConvertTreeToList(Node root, IList<ExpressionNode> list)
+        public static NodeString ConvertTreeToListMethode(NodeString root)
         {
             if (root == null)
             {
-                return;
+                return null;
             }
-            var node = new ExpressionNode((NodeString)root);
-            node.Node = (NodeString)root;
-            node.Children = new List<NodeString>();
-            node.Children.Add((NodeString)root.Left);
-            node.Children.Add((NodeString)root.Right);
-            list.Add(node);
-            ConvertTreeToList((NodeString)root.Left, list);
-            ConvertTreeToList((NodeString)root.Right, list);
+
+            root.NodeInfo = root.NodeType + " " + root.DataString;
+            root.Children = new System.Collections.ObjectModel.ObservableCollection<NodeString>();
+            if (root.Left != null)
+            {
+                root.Children.Add((NodeString)root.Left);
+                _ = ConvertTreeToList((NodeString)root.Left);
+            }
+
+            if (root.Right != null)
+            {
+                root.Children.Add((NodeString)root.Right);
+                _ = ConvertTreeToList((NodeString)root.Right);
+            }
+
+
+
+
+            return root;
+
         }
-        public static IList<ExpressionNode> ConvertTreeToList(Node root)
+        public static NodeString ConvertTreeToList(NodeString root)
         {
-            var result = new List<ExpressionNode>();
-            ConvertTreeToList(root, result);
-            return result;
+            return ConvertTreeToListMethode(root);
         }
     }
-    
+
 }

@@ -41,23 +41,6 @@ namespace WpfExpressionEditor.CustomCommands
             System.Collections.IList selectedItems = control.SelectedItems;
             var command = (ICommand)control.GetValue(DataGridSelectionChangedCommandProperty);
             command.Execute(selectedItems);
-        }
-        public static readonly DependencyProperty IsTextSelectedProperty = DependencyProperty.RegisterAttached(
-                                                                       "IsTextSelected",
-                                                                       typeof(bool),
-                                                                       typeof(CustomCommands),
-                                                                       new FrameworkPropertyMetadata(IsTextSelectedChanged));
-
-        public static void SetIsTextSelected(DependencyObject target, bool value) => target.SetValue(IsTextSelectedProperty, value);
-
-        public static bool GetIsTextSelected(DependencyObject target) => (bool)target.GetValue(IsTextSelectedProperty);
-
-        private static void IsTextSelectedChanged(DependencyObject target, DependencyPropertyChangedEventArgs e)
-        {
-            var element = target as TextBox;
-            FocusManager.SetFocusedElement(target, element);
-            FocusManager.SetIsFocusScope(target, true);
-            Keyboard.Focus(element);
-        }
+        }      
     }
 }

@@ -13,7 +13,7 @@ namespace WpfExpressionEditor.ViewModel
 {
     public static class TextBoxHelper
     {
-        private const string SelectedTextPropertyDefault = " And ";
+        private const string SelectedTextPropertyDefault = "And ";
 
         public static string GetSelectedText(DependencyObject obj) => (string)obj.GetValue(SelectedTextProperty);
 
@@ -31,15 +31,13 @@ namespace WpfExpressionEditor.ViewModel
 
         private static void SelectedTextChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
         {
-
+            
             var element = dependencyObject as TextBox;
             FocusManager.SetFocusedElement(dependencyObject, element);
             FocusManager.SetIsFocusScope(dependencyObject, true);
             Keyboard.Focus(element);
-
-            //element.SelectionChanged += SelectionChangedForSelectedText;
-
-            var newValue = eventArgs.NewValue as string;
+           
+            string newValue = eventArgs.NewValue as string;
 
             if (dependencyObject is not TextBox textBox)
             {
@@ -48,9 +46,9 @@ namespace WpfExpressionEditor.ViewModel
             if (newValue is not null)
             {
                 int length = newValue.Length;
-                if (newValue.StartsWith("Or "))
+                if (newValue.StartsWith("Or ") || newValue.StartsWith("And "))
                 {
-                    newValue = newValue.Substring(3, newValue.Length - 3);
+                    newValue = newValue.StartsWith("Or ") ? newValue.Substring(3, newValue.Length - 3) : newValue.Substring(4, newValue.Length - 4);
                     length = newValue.Length;
                     int i = 0;
                     while (newValue[i] == '(')
@@ -58,46 +56,17 @@ namespace WpfExpressionEditor.ViewModel
                         i++;
                     }
                     length = length - i;
-                    newValue = newValue.Substring(i, newValue.IndexOf("Or",1) - i);
+                    int nextClosingBracket = newValue.IndexOf(")", 1);               
+                    newValue = newValue.Substring(i, nextClosingBracket - i);
                 }
-                else if (newValue.StartsWith("And "))
+
+                newValue = newValue.TrimStart(' ').TrimEnd(' ').Replace("==","Equal");
+                int start = textBox.Text.ToString().IndexOf(newValue);
+                if (start > -1)
                 {
-                    newValue = newValue.Substring(4, newValue.Length - 4);
+                    textBox.Select(start, length);
                 }
-                int start = textBox.Text.ToString().IndexOf(newValue.TrimStart(' '));
-                textBox.Select(start, length);
-            }
-            /*
-            var oldValue = eventArgs.OldValue as string;
-            var newValue = eventArgs.NewValue as string;
-
-            if (oldValue == SelectedTextPropertyDefault && newValue != SelectedTextPropertyDefault)
-            {
-                textBox.SelectionChanged += SelectionChangedForSelectedText;
-            }
-            else if (oldValue != SelectedTextPropertyDefault && newValue == SelectedTextPropertyDefault)
-            {
-                textBox.SelectionChanged -= SelectionChangedForSelectedText;
-            }
-
-            if (newValue is not null && newValue != textBox.SelectedText)
-            {
-                textBox.SelectedText = newValue;
-            }
-            */
-        }
-
-        private static void SelectionChangedForSelectedText(object sender, RoutedEventArgs eventArgs)
-        {
-            if (sender is TextBox textBox)
-            {
-                //SetSelectedText(textBox, textBox.SelectedText);
-                if (!string.IsNullOrEmpty(textBox.SelectedText))
-                {
-                    textBox.SelectionChanged -= SelectionChangedForSelectedText;
-                    int start = textBox.Text.ToString().IndexOf(textBox.SelectedText);
-                }
-            }
-        }
+            }            
+        }       
     }
 }

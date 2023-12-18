@@ -32,8 +32,7 @@ namespace WpfExpressionEditor
         }
         private void GetSelectedItem(ExpressionAdapter adapter)
         {           
-            viewModel.SelectedText = adapter.Text;            
-            //Messenger.Default.Send<string>(adapter.Text);
+            viewModel.SelectedText = adapter.Text;          
         }
         public string Text
         {

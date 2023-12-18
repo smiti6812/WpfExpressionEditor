@@ -12,7 +12,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="80" />
             <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="100"/>
+
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"/>
@@ -21,10 +22,10 @@
         </Grid.ColumnDefinitions>
         <Border Grid.Row="1" Grid.ColumnSpan="3" Background="White"></Border>
         <views:CrashdataMappingList Grid.Row="1" Grid.Column="1" x:Name = "CrashdataMappingList"/>
-        <TreeView Name="NodeTree" Grid.Row="2" Width="300">
+        <TreeView Name="NodeTree" Grid.Row="1" Grid.ColumnSpan="2" MaxHeight="100" Margin="0,504,380,0" Grid.RowSpan="2" >
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type tree:NodeString}" ItemsSource="{Binding Children}">
-                    <TextBlock Text="{Binding Formula}" />
+                    <TextBlock Text="{Binding NodeInfo}" />
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

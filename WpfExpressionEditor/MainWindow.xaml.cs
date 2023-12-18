@@ -27,10 +27,9 @@ namespace WpfExpressionEditor
             InitializeComponent();           
             NodeString root = new NodeString();
             string str = "(c.Quantity > 100 And ((c.Quantity < 250 Or c.Artist == \"Betontod\") And (c.Title ==\"Revolution\" And c.Quantity > 100)))";
-            var n = GenerateTree.GetTreeFrom_String(root, str);
-            treeNodes = new List<ExpressionNode>();          
-            treeNodes = GenerateTree.ConvertTreeToList(n);
-            NodeTree.ItemsSource = treeNodes;
+            var n = GenerateTree.GetTreeFrom_String(root, str);        
+            NodeString node = GenerateTree.ConvertTreeToList(n);
+            _ = NodeTree.Items.Add(node);
 
         }
     }

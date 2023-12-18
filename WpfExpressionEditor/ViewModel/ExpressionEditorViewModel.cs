@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media;
 
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
@@ -21,7 +22,7 @@ namespace WpfExpressionEditor.ViewModel
         public CrashDataMappingItemViewModel CrashDataMappingItemViewModel { get; set; }
         public ExpressionEditorViewModel() : base()
         {
-           
+            
         }
         public override void SaveAndSend()
         {   
@@ -36,6 +37,6 @@ namespace WpfExpressionEditor.ViewModel
             }
 
             RuleTextOk = false;
-        }
+        }       
     }
 }

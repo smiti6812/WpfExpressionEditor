@@ -8,13 +8,20 @@ namespace WpfExpressionEditor.Tree
 {
     public class ExpressionNode
     {
+        public NodeString Node { get; set; }
+
+        public NodeString Parent { get; set; }
         public string Formula { get; set; } 
         public ExpressionNode(NodeString _node) 
         {
-            Node = _node;
-            Formula = Node.NodeType + " " + Node.DataString;
-        }
-        public NodeString Node { get; set; }
+            Node = _node;         
+            Formula = _node.NodeType + " " + _node.DataString;
+        }      
         public IList<NodeString> Children { get; set; }
+
+        public override string ToString()
+        {
+            return Node.ToString();
+        }
     }
 }
