@@ -13,11 +13,20 @@ namespace WpfExpressionEditor.ViewModel
 {
     public static class TextBoxHelper
     {
-        private const string SelectedTextPropertyDefault = "And ";
-
         public static string GetSelectedText(DependencyObject obj) => (string)obj.GetValue(SelectedTextProperty);
-
         public static void SetSelectedText(DependencyObject obj, string value) => obj.SetValue(SelectedTextProperty, value);
+        public static int GetSelectionStart(DependencyObject obj) => int.Parse(obj.GetValue(SelectionStartProperty).ToString());
+        public static void SetSelectionStart(DependencyObject obj, int value) => obj.SetValue(SelectionStartProperty, value);
+
+        public static readonly DependencyProperty SelectionStartProperty =
+           DependencyProperty.RegisterAttached(
+               "SelectionStart",
+               typeof(int),
+               typeof(TextBoxHelper),
+               new FrameworkPropertyMetadata(
+                   0,
+                   FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                   SelectionStartChanged));
 
         public static readonly DependencyProperty SelectedTextProperty =
             DependencyProperty.RegisterAttached(
@@ -25,48 +34,60 @@ namespace WpfExpressionEditor.ViewModel
                 typeof(string),
                 typeof(TextBoxHelper),
                 new FrameworkPropertyMetadata(
-                    SelectedTextPropertyDefault,
+                    "Default",
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
                     SelectedTextChanged));
 
+        
+
+        private static void SelectionStartChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
+        {
+            var textBox = dependencyObject as TextBox;
+            int startSelection = (int)eventArgs.NewValue;
+            //MappingRuleEditorViewModel.Instance.ExpressionEditorViewModel.SelectionStart = startSelection;
+            //MappingRuleEditorViewModel.Instance.ExpressionEditorViewModel.SelectionLength = textBox.SelectionLength;
+        }
         private static void SelectedTextChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
         {
-            
             var element = dependencyObject as TextBox;
             FocusManager.SetFocusedElement(dependencyObject, element);
             FocusManager.SetIsFocusScope(dependencyObject, true);
-            Keyboard.Focus(element);
-           
+            _ = Keyboard.Focus(element);
+
             string newValue = eventArgs.NewValue as string;
-
-            if (dependencyObject is not TextBox textBox)
+            if (newValue == null)
             {
-                return;
+                element.SelectionChanged += TextSelectionChanged;
             }
-            if (newValue is not null)
+
+            if (!string.IsNullOrEmpty(newValue))
             {
-                int length = newValue.Length;
-                if (newValue.StartsWith("Or ") || newValue.StartsWith("And "))
+                string[] newValueArray = newValue.Split(',');
+                if (dependencyObject is not TextBox textBox)
                 {
-                    newValue = newValue.StartsWith("Or ") ? newValue.Substring(3, newValue.Length - 3) : newValue.Substring(4, newValue.Length - 4);
-                    length = newValue.Length;
-                    int i = 0;
-                    while (newValue[i] == '(')
-                    {
-                        i++;
-                    }
-                    length = length - i;
-                    int nextClosingBracket = newValue.IndexOf(")", 1);               
-                    newValue = newValue.Substring(i, nextClosingBracket - i);
+                    return;
                 }
 
-                newValue = newValue.TrimStart(' ').TrimEnd(' ').Replace("==","Equal");
-                int start = textBox.Text.ToString().IndexOf(newValue);
-                if (start > -1)
+                if (newValueArray[0] is not null && (!newValueArray[0].StartsWith("And") && !newValueArray[0].StartsWith("Or")))
                 {
-                    textBox.Select(start, length);
+                    int start = int.Parse(newValueArray[1]);
+                    int length = newValueArray[0].Length;
+                    if (start > -1)
+                    {
+                        textBox.Select(start, length);
+                    }
                 }
-            }            
-        }       
+                else
+                {
+                    textBox.Select(0, 0);
+                }
+            }
+        }
+        private static void TextSelectionChanged(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            //MappingRuleEditorViewModel.Instance.ExpressionEditorViewModel.SelectionStart = textBox.SelectionStart;
+            //MappingRuleEditorViewModel.Instance.ExpressionEditorViewModel.SelectionLength = textBox.SelectionLength;
+        }
     }
 }

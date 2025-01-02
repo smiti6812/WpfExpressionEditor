@@ -16,5 +16,5 @@ namespace WpfExpressionEditor.Converters
             return value is bool ? (bool)value ? Visibility.Visible : Visibility.Collapsed : (object)Visibility.Collapsed;
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
-    }
+    }   
 }

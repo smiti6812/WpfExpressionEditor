@@ -41,6 +41,6 @@ namespace WpfExpressionEditor.CustomCommands
             System.Collections.IList selectedItems = control.SelectedItems;
             var command = (ICommand)control.GetValue(DataGridSelectionChangedCommandProperty);
             command.Execute(selectedItems);
-        }      
+        }   
     }
 }

@@ -21,7 +21,7 @@ namespace WpfExpressionEditor.UserControls
     /// <summary>
     /// Interaction logic for ExpressionEditor.xaml
     /// </summary>
-    public partial class ExpressionEditor : UserControl
+    public partial class ExpressionEditor : Window
     {       
         public ExpressionEditor()
         {

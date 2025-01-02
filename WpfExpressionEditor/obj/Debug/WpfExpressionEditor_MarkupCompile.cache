@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\SCM6BP\Documents\Work\ExpressionEditor_MappingRuleSet\WpfExpressionEditor\WpfExpressionEditor\obj\Debug\
+C:\Users\SCM6BP\Documents\GithubEnterprise\WpfExpressionEditor\WpfExpressionEditor\WpfExpressionEditor\obj\Debug\
 WpfExpressionEditor
 none
 false
 DEBUG;TRACE
-C:\Users\SCM6BP\Documents\Work\ExpressionEditor_MappingRuleSet\WpfExpressionEditor\WpfExpressionEditor\App.xaml
+C:\Users\SCM6BP\Documents\GithubEnterprise\WpfExpressionEditor\WpfExpressionEditor\WpfExpressionEditor\App.xaml
 31821832973
 
-25-1948417549
-143-672530840
+34-366925647
+148-1159295168
 MainWindow.xaml;UserControls\CrashdataMappingList.xaml;UserControls\ExpressionEditor.xaml;
 
-False
+True
 
