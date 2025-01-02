@@ -9,6 +9,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml.Linq;
 
+using GalaSoft.MvvmLight.Messaging;
+using WpfExpressionEditor.Model;
+
 namespace WpfExpressionEditor.ViewModel
 {
     public static class TextBoxHelper
@@ -44,6 +47,8 @@ namespace WpfExpressionEditor.ViewModel
         {
             var textBox = dependencyObject as TextBox;
             int startSelection = (int)eventArgs.NewValue;
+            Messenger.Default.Send(new NotificationMessage<int>(startSelection, "MsgSendStartSelection"));
+            Messenger.Default.Send(new NotificationMessage<int>(startSelection, "MsgSendSelectionLength"));
             //MappingRuleEditorViewModel.Instance.ExpressionEditorViewModel.SelectionStart = startSelection;
             //MappingRuleEditorViewModel.Instance.ExpressionEditorViewModel.SelectionLength = textBox.SelectionLength;
         }
@@ -86,6 +91,8 @@ namespace WpfExpressionEditor.ViewModel
         private static void TextSelectionChanged(object sender, RoutedEventArgs e)
         {
             var textBox = sender as TextBox;
+            Messenger.Default.Send(new NotificationMessage<int>(textBox.SelectionStart, "MsgSendStartSelection"));
+            Messenger.Default.Send(new NotificationMessage<int>(textBox.SelectionLength, "MsgSendSelectionLength"));
             //MappingRuleEditorViewModel.Instance.ExpressionEditorViewModel.SelectionStart = textBox.SelectionStart;
             //MappingRuleEditorViewModel.Instance.ExpressionEditorViewModel.SelectionLength = textBox.SelectionLength;
         }

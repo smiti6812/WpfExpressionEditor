@@ -33,7 +33,34 @@ namespace WpfExpressionEditor.ViewModel
             Messenger.Default.Register<string>(this, ReceiveMessage);
             Messenger.Default.Register<NotificationMessage<IList<CrashDataMappingItem>>>(this, ReceiveMappableChannelList);
             Messenger.Default.Register<NotificationMessage<IList<CrashDataMappingItem>>>(this, ReceiveMappingRuleEditorSelectedItems);
+            Messenger.Default.Register<NotificationMessage<int>>(this, ReceiveSelectionStart);
+            Messenger.Default.Register<NotificationMessage<int>>(this, ReceiveSelectionLength);
+            Messenger.Default.Register<string>(this, RequestExpressionText);
         }
+
+        private void RequestExpressionText(string message)
+        {
+            if (message.Equals("MsgRequestExpressionText"))
+            {
+                Messenger.Default.Send(new NotificationMessage<string>(ExpressionText, "MsgReceiveExpressionText"));
+            }
+        }
+
+        private void ReceiveSelectionStart(NotificationMessage<int> message)
+        {
+            if (message.Notification.Equals("MsgSendStartSelection"))
+            {
+                SelectionStart = message.Content;
+            }
+        }
+        private void ReceiveSelectionLength(NotificationMessage<int> message)
+        {
+            if (message.Notification.Equals("MsgSendSelectionLength"))
+            {
+                SelectionLength = message.Content;
+            }
+        }
+
         public override void SaveAndSend()
         {
             if (string.IsNullOrEmpty(ExpressionText))
@@ -66,7 +93,7 @@ namespace WpfExpressionEditor.ViewModel
             selectedRuleset = [];
             foreach (CrashDataMappingItem selectedItem in selectedItems)
             {
-                selectedItem.ExpressionAdapters = [GetExpressionAdapterViewModelCollection(exprAdapterTree, new(exprAdapterTree, ExpressionText), selectedItem)];
+                selectedItem.ExpressionAdapters = [GetExpressionAdapterViewModelCollection(exprAdapterTree, new(exprAdapterTree), selectedItem)];
                 string ruleAsText = string.IsNullOrWhiteSpace(ExpressionText) ? selectedItem.DefaultRuleTextValue : ExpressionText;
                 var updatedItem = mappableChannelList.Where(c => c.SensorLocation == selectedItem.SensorLocation && c.SensorDirection ==
                 selectedItem.SensorDirection);
@@ -96,7 +123,7 @@ namespace WpfExpressionEditor.ViewModel
             foreach (var node in tree.Children)
             {
                 root.Children ??= [];
-                ExpressionAdapterViewModel newAdapterViewModel = new(node, ExpressionText);
+                ExpressionAdapterViewModel newAdapterViewModel = new(node);
                 newAdapterViewModel.ExpressionAdapterTree.UpdateExpressionText = UpdateExpressionText;
                 newAdapterViewModel.ExpressionAdapterTree.UpdateExpressionText += crashDataMappingItem.UpdateRuleText;
                 newAdapterViewModel.Parent = root;

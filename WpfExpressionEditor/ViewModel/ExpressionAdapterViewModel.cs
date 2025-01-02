@@ -6,23 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 
 using WpfExpressionEditor.Interfaces;
+using WpfExpressionEditor.Model;
 
 namespace WpfExpressionEditor.ViewModel
 {
     public class ExpressionAdapterViewModel : ViewModelBase
     {
-        private string editorExpressionText;
-        public string EditorExpressionText
-        {
-            get => EditorExpressionText;
-            set
-            {
-                editorExpressionText = value;
-                RaisePropertyChanged(nameof(EditorExpressionText));
-            }
-        }
+        private ExpressionAdapterViewModel selectedItem;
+      
         public int Level
         {
             get => expressionAdapterTree.Level;
@@ -100,7 +94,7 @@ namespace WpfExpressionEditor.ViewModel
 
         private string originalExpression;
 
-        public ExpressionAdapterViewModel(IExpressionAdapterTree treeNode, string _editorExpressionText)
+        public ExpressionAdapterViewModel(IExpressionAdapterTree treeNode)
         {
             expressionAdapterTree = treeNode;
             IsReadOnly = treeNode.Level <= 1;
@@ -108,8 +102,7 @@ namespace WpfExpressionEditor.ViewModel
             if (treeNode.Level <= 1)
             {
                 treeNode.UpdateExpressionAdapterRuleText = UpdateRootNodeText;
-            }
-            editorExpressionText = _editorExpressionText;
+            }           
             GetSelectedItemCommand = new RelayCommand<ExpressionAdapterViewModel>(GetSelectedItem);
             EditSelectedItemCommand = new RelayCommand<ExpressionAdapterViewModel>(EditSelectedItem);
             HideSelectedItemCommand = new RelayCommand<ExpressionAdapterViewModel>(HideSelectedItem);
@@ -123,24 +116,34 @@ namespace WpfExpressionEditor.ViewModel
         private void LostFocus() => Text = !expressionAdapterTree.UpdateExpressionFromTree(originalExpression, Text) ? originalExpression : Text;
         public void UpdateRootNodeText(string newExpressionText) => Text = newExpressionText;
 
-        private void EditSelectedItem(ExpressionAdapterViewModel selectedItem)
+        private void EditSelectedItem(ExpressionAdapterViewModel _selectedItem)
         {
             if (Level > 1)
             {
                 originalExpression = Text;
-                selectedItem.IsVisible = true;
+                _selectedItem.IsVisible = true;
             }
         }
 
-        private void HideSelectedItem(ExpressionAdapterViewModel selectedItem) => selectedItem.IsVisible = false;
+        private void HideSelectedItem(ExpressionAdapterViewModel _selectedItem) => _selectedItem.IsVisible = false;
 
-        private void GetSelectedItem(ExpressionAdapterViewModel selectedItem)
+        private void GetSelectedItem(ExpressionAdapterViewModel _selectedItem)
         {
+            selectedItem = _selectedItem;
             if (selectedItem.Text != EditorHelper.Or
                 && selectedItem.Text != EditorHelper.And && !selectedItem.Text.StartsWith("Rule"))
             {
+                Messenger.Default.Register<NotificationMessage<string>>(this, ReceiveExpressionText);
+                Messenger.Default.Send("MsgRequestExpressionText");              
+            }
+        }
+
+        private void ReceiveExpressionText(NotificationMessage<string> message)
+        {
+            if(message.Notification.Equals("MsgReceiveExpressionText"))
+            {               
                 string selectedTextExtended = "";
-                string expressionText = EditorExpressionText;
+                string expressionText = message.Content;
                 int startIndex;
                 if (selectedItem.Parent.Children.Count == 1)
                 {
@@ -160,6 +163,7 @@ namespace WpfExpressionEditor.ViewModel
 
                 string selectedText = $"{selectedItem.Text},{(startIndex > -1 ? startIndex.ToString() : expressionText.Length.ToString())}";
                 expressionAdapterTree.ReturnExpressionTreeTopDown().UpdateSelectedText(selectedText);
+                Messenger.Default.Unregister<NotificationMessage<string>>(this, ReceiveExpressionText);
             }
         }
     }

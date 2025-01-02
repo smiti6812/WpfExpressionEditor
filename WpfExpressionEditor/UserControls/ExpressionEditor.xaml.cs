@@ -26,9 +26,10 @@ namespace WpfExpressionEditor.UserControls
         public ExpressionEditor()
         {
             InitializeComponent();
-            Messenger.Default.Register<string>(this, HighlightSelectedText);            
+           // Messenger.Default.Register<string>(this, HighlightSelectedText);            
         }
 
+        /*
         private void HighlightSelectedText(string text)
         {
             int start = ExpressionText.Text.IndexOf(text.Replace("Or ","").Replace("And ",""));
@@ -39,5 +40,6 @@ namespace WpfExpressionEditor.UserControls
         private void ExpressionText_TextChanged(object sender, TextChangedEventArgs e)
         {            
         }
+        */
     }
 }
