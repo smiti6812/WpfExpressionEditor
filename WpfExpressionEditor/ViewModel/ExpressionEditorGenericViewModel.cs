@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 
@@ -15,7 +16,7 @@ using WpfExpressionEditor.Model;
 
 namespace WpfExpressionEditor.ViewModel
 {
-    public class ExpressionEditorGenericViewModel<T> : BindableBase
+    public class ExpressionEditorGenericViewModel<T> : ViewModelBase
     {
         private T item;
         public T Item
@@ -25,7 +26,7 @@ namespace WpfExpressionEditor.ViewModel
             {
                 item = value;
                 FieldsAndValues = ExpressionEditorHelper<T>.GetPropertiesAndValuesOfGenericType(Item);
-                OnPropertyChanged(nameof(Item));
+                RaisePropertyChanged(nameof(Item));
             }
         }
 
@@ -36,7 +37,7 @@ namespace WpfExpressionEditor.ViewModel
             set
             {
                 expressionTree = value;
-                OnPropertyChanged(nameof(ExpressionTree));
+                RaisePropertyChanged(nameof(ExpressionTree));
             }
         }
 
@@ -47,7 +48,7 @@ namespace WpfExpressionEditor.ViewModel
             set
             {
                 isTextSelected = value;
-                OnPropertyChanged(nameof(IsTextSelected));
+                RaisePropertyChanged(nameof(IsTextSelected));
             }
         }
 
@@ -58,7 +59,7 @@ namespace WpfExpressionEditor.ViewModel
             set
             {
                 selectedField = value;
-                OnPropertyChanged(nameof(SelectedField));
+                RaisePropertyChanged(nameof(SelectedField));
                 PropertyAndValueSelected = SelectedField != null && SelectedPropertyValue != null;
             }
         }
@@ -70,7 +71,7 @@ namespace WpfExpressionEditor.ViewModel
             set
             {
                 selectedPropertyValue = value;
-                OnPropertyChanged(nameof(SelectedPropertyValue));
+                RaisePropertyChanged(nameof(SelectedPropertyValue));
                 PropertyAndValueSelected = SelectedField != null && SelectedPropertyValue != null;
             }
         }
@@ -82,7 +83,7 @@ namespace WpfExpressionEditor.ViewModel
             set
             {
                 selectedText = value;
-                OnPropertyChanged(nameof(SelectedText));
+                RaisePropertyChanged(nameof(SelectedText));
             }
         }
 
@@ -94,7 +95,7 @@ namespace WpfExpressionEditor.ViewModel
             set
             {
                 selectionLength = value;
-                OnPropertyChanged(nameof(SelectionLength));
+                RaisePropertyChanged(nameof(SelectionLength));
             }
         }
 
@@ -105,7 +106,7 @@ namespace WpfExpressionEditor.ViewModel
             set
             {
                 selectionStart = value;
-                OnPropertyChanged(nameof(SelectionStart));
+                RaisePropertyChanged(nameof(SelectionStart));
             }
         }
 
@@ -116,7 +117,7 @@ namespace WpfExpressionEditor.ViewModel
             set
             {
                 expressionText = value;
-                OnPropertyChanged(nameof(ExpressionText));
+                RaisePropertyChanged(nameof(ExpressionText));
             }
         }
 
@@ -127,7 +128,7 @@ namespace WpfExpressionEditor.ViewModel
             set
             {
                 ruleTextOk = value;
-                OnPropertyChanged(nameof(RuleTextOk));
+                RaisePropertyChanged(nameof(RuleTextOk));
             }
         }
 
@@ -138,7 +139,7 @@ namespace WpfExpressionEditor.ViewModel
             set
             {
                 errorText = value;
-                OnPropertyChanged(nameof(ErrorText));
+                RaisePropertyChanged(nameof(ErrorText));
             }
         }
 
@@ -149,7 +150,7 @@ namespace WpfExpressionEditor.ViewModel
             set
             {
                 propertyAndValueSelected = value;
-                OnPropertyChanged(nameof(PropertyAndValueSelected));
+                RaisePropertyChanged(nameof(PropertyAndValueSelected));
             }
         }
 
@@ -160,7 +161,7 @@ namespace WpfExpressionEditor.ViewModel
             set
             {
                 expression = value;
-                OnPropertyChanged(nameof(Expression));
+                RaisePropertyChanged(nameof(Expression));
             }
         }
         public ObservableCollection<T> Items { get; set; }
@@ -172,7 +173,7 @@ namespace WpfExpressionEditor.ViewModel
             set
             {
                 fieldsAndValues = value;
-                OnPropertyChanged(nameof(FieldsAndValues));
+                RaisePropertyChanged(nameof(FieldsAndValues));
             }
         }
 

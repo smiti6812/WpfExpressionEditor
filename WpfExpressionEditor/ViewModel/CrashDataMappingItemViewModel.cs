@@ -15,6 +15,8 @@ using GalaSoft.MvvmLight.Messaging;
 
 using MoreLinq;
 
+using NHibernate.Util;
+
 using WpfExpressionEditor.Model;
 using WpfExpressionEditor.UserControls;
 
@@ -45,7 +47,7 @@ namespace WpfExpressionEditor.ViewModel
             LoadCrashDataMappingItems();
             OpenExpressionEditorCommand = new RelayCommand(OnOpenEditor, CanOpen);
             SelectionChangedCommand = new RelayCommand<IList>(SelectionChanged);
-            ExpressionEditorViewModel = new ExpressionEditorViewModel();            
+            ExpressionEditorViewModel = new ExpressionEditorViewModel();
             EditRulesCommand = new RelayCommand<CrashDataMappingItem>(EditRules);
         }
         private void EditRules(CrashDataMappingItem item)
@@ -54,10 +56,7 @@ namespace WpfExpressionEditor.ViewModel
         }
 
         private void SelectionChanged(IList selectedItems)
-        {
-            //ExpressionEditorViewModel.IsVisible = false;
-            ExpressionEditorViewModel.ExpressionText = "";
-            ExpressionEditorViewModel.RuleTextOk = false;
+        {           
             SelectedItems = new List<CrashDataMappingItem>(selectedItems.Cast<CrashDataMappingItem>());
             SelectedItems.ForEach(item => item.IsInRuleEditingMode = true);
             Messenger.Default.Send(new NotificationMessage<IList<CrashDataMappingItem>>(CrashDataMappingItems, "MsgChannelsOfSelectedCrash"));
@@ -73,7 +72,7 @@ namespace WpfExpressionEditor.ViewModel
             //ExpressionEditorViewModel.IsVisible = true;
             ExpressionEditorViewModel.CrashDataMappingItemViewModel = this;
             ExpressionEditorViewModel.ExpressionText = SelectedCrashDataMappingItem.RuleAsText != "Create Rules" ? SelectedCrashDataMappingItem.RuleAsText : "";
-            ExpressionEditorViewModel.FieldsAndValues = ExpressionEditorViewModel.FieldsAndValues.Where(c => c.Key != "RuleAsText" && c.Key != "SensorRotator").ToDictionary<string,string>();
+            ExpressionEditorViewModel.FieldsAndValues = ExpressionEditorViewModel.FieldsAndValues.Where(c => c.Key != "RuleAsText" && c.Key != "SensorRotator").ToDictionary<string, string>();
             LoadRuleEditorData(SelectedCrashDataMappingItem);
         }
 
@@ -105,12 +104,12 @@ namespace WpfExpressionEditor.ViewModel
                         }
                     }
 
-                    CrashDataMappingItems = tempMappebleChannelList;                  
+                    CrashDataMappingItems = tempMappebleChannelList;
                     CreateRuleset();
                 }
                 else
                 {
-                    CrashDataMappingItems = message.Content.ToObservableCollection();                 
+                    CrashDataMappingItems = message.Content.ToObservableCollection();
                     CreateRuleset();
                 }
             }

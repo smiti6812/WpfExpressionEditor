@@ -104,9 +104,9 @@
                                             <StackPanel Orientation="Vertical" Background="Transparent">
                                                 <TextBlock Text="{Binding Text,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                                     <TextBlock.InputBindings>
-                                                        <MouseBinding MouseAction="RightClick" Command="{Binding GetSelectedItemCommand}" CommandParameter="{Binding}" />
-                                                        <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding EditSelectedItemCommand}" CommandParameter="{Binding}"/>
-                                                        <MouseBinding MouseAction="LeftClick" Command="{Binding HideSelectedItemCommand}" CommandParameter="{Binding}"  />
+                                                        <MouseBinding MouseAction="RightClick" Command="{Binding GetSelectedItemCommand}" />
+                                                        <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding EditSelectedItemCommand}" />
+                                                        <MouseBinding MouseAction="LeftClick" Command="{Binding HideSelectedItemCommand}"  />
                                                     </TextBlock.InputBindings>
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
@@ -127,7 +127,7 @@
                                                     </interactivity:Interaction.Triggers>
 
                                                     <TextBox.InputBindings>
-                                                        <MouseBinding MouseAction="RightClick" Command="{Binding GetSelectedItemCommand}" CommandParameter="{Binding}" />
+                                                        <MouseBinding MouseAction="RightClick" Command="{Binding GetSelectedItemCommand}" />
                                                     </TextBox.InputBindings>
                                                 </TextBox>
                                             </StackPanel>

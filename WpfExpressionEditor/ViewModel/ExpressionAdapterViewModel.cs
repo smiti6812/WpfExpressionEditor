@@ -14,9 +14,7 @@ using WpfExpressionEditor.Model;
 namespace WpfExpressionEditor.ViewModel
 {
     public class ExpressionAdapterViewModel : ViewModelBase
-    {
-        private ExpressionAdapterViewModel selectedItem;
-      
+    {     
         public int Level
         {
             get => expressionAdapterTree.Level;
@@ -103,35 +101,34 @@ namespace WpfExpressionEditor.ViewModel
             {
                 treeNode.UpdateExpressionAdapterRuleText = UpdateRootNodeText;
             }           
-            GetSelectedItemCommand = new RelayCommand<ExpressionAdapterViewModel>(GetSelectedItem);
-            EditSelectedItemCommand = new RelayCommand<ExpressionAdapterViewModel>(EditSelectedItem);
-            HideSelectedItemCommand = new RelayCommand<ExpressionAdapterViewModel>(HideSelectedItem);
+            GetSelectedItemCommand = new RelayCommand(GetSelectedItem);
+            EditSelectedItemCommand = new RelayCommand(EditSelectedItem);
+            HideSelectedItemCommand = new RelayCommand(HideSelectedItem);
             LostFocusCommand = new RelayCommand(LostFocus);
         }
 
-        public RelayCommand<ExpressionAdapterViewModel> GetSelectedItemCommand { get; set; }
-        public RelayCommand<ExpressionAdapterViewModel> EditSelectedItemCommand { get; set; }
-        public RelayCommand<ExpressionAdapterViewModel> HideSelectedItemCommand { get; set; }
+        public RelayCommand GetSelectedItemCommand { get; set; }
+        public RelayCommand EditSelectedItemCommand { get; set; }
+        public RelayCommand HideSelectedItemCommand { get; set; }
         public RelayCommand LostFocusCommand { get; set; }
         private void LostFocus() => Text = !expressionAdapterTree.UpdateExpressionFromTree(originalExpression, Text) ? originalExpression : Text;
         public void UpdateRootNodeText(string newExpressionText) => Text = newExpressionText;
 
-        private void EditSelectedItem(ExpressionAdapterViewModel _selectedItem)
+        private void EditSelectedItem()
         {
             if (Level > 1)
             {
                 originalExpression = Text;
-                _selectedItem.IsVisible = true;
+                IsVisible = true;
             }
         }
 
-        private void HideSelectedItem(ExpressionAdapterViewModel _selectedItem) => _selectedItem.IsVisible = false;
+        private void HideSelectedItem() => IsVisible = false;
 
-        private void GetSelectedItem(ExpressionAdapterViewModel _selectedItem)
-        {
-            selectedItem = _selectedItem;
-            if (selectedItem.Text != EditorHelper.Or
-                && selectedItem.Text != EditorHelper.And && !selectedItem.Text.StartsWith("Rule"))
+        private void GetSelectedItem()
+        {            
+            if (Text != EditorHelper.Or
+                && Text != EditorHelper.And && !Text.StartsWith("Rule"))
             {
                 Messenger.Default.Register<NotificationMessage<string>>(this, ReceiveExpressionText);
                 Messenger.Default.Send("MsgRequestExpressionText");              
@@ -145,23 +142,23 @@ namespace WpfExpressionEditor.ViewModel
                 string selectedTextExtended = "";
                 string expressionText = message.Content;
                 int startIndex;
-                if (selectedItem.Parent.Children.Count == 1)
+                if (Parent.Children.Count == 1)
                 {
-                    startIndex = expressionText.IndexOf(selectedItem.Text);
+                    startIndex = expressionText.IndexOf(Text);
                 }
                 else
                 {
                     //Left
                     selectedTextExtended = expressionAdapterTree.CheckRightAndLeftSideOfExpressionIfAndOrOr(1) ?
-                        selectedItem.Parent.Children[1].Text : selectedTextExtended;
+                        Parent.Children[1].Text : selectedTextExtended;
                     //Right
                     selectedTextExtended += expressionAdapterTree.CheckRightAndLeftSideOfExpressionIfAndOrOr(0) ?
-                     $" {selectedItem.Parent.Text} {selectedItem.Parent.Children[0].Text}" : "";
+                     $" {Parent.Text} {Parent.Children[0].Text}" : "";
                     selectedTextExtended = selectedTextExtended.Trim();
-                    startIndex = expressionText.IndexOf(selectedTextExtended) + selectedTextExtended.IndexOf(selectedItem.Text);
+                    startIndex = expressionText.IndexOf(selectedTextExtended) + selectedTextExtended.IndexOf(Text);
                 }
 
-                string selectedText = $"{selectedItem.Text},{(startIndex > -1 ? startIndex.ToString() : expressionText.Length.ToString())}";
+                string selectedText = $"{Text},{(startIndex > -1 ? startIndex.ToString() : expressionText.Length.ToString())}";
                 expressionAdapterTree.ReturnExpressionTreeTopDown().UpdateSelectedText(selectedText);
                 Messenger.Default.Unregister<NotificationMessage<string>>(this, ReceiveExpressionText);
             }
